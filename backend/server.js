@@ -5,6 +5,8 @@ const cors = require('cors');
 
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
+const salesRoutes = require('./routes/salesRoutes');
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 const pool = require('./config/db');
 
@@ -34,15 +36,14 @@ async function testDB() {
 
 testDB();
 
-/**
- * Routes
- */
+/*** Routes*/
+
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/sales', salesRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
-/**
- * Test Route (TEMPORARY DEBUG)
- */
+/*** Test Route (TEMPORARY DEBUG)*/
 app.post('/test-body', (req, res) => {
 
   console.log('📦 BODY:', req.body);
@@ -52,16 +53,12 @@ app.post('/test-body', (req, res) => {
   });
 });
 
-/**
- * Default Route
- */
+/*** Default Route*/
 app.get('/', (req, res) => {
   res.send('TradeTech API Running Successfully');
 });
 
-/**
- * Server
- */
+/*** Server*/
 const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {

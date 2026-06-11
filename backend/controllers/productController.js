@@ -20,12 +20,14 @@ const createProduct = async (req, res) => {
             });
         }
 
-        const product = await productModel.createProduct(
-            name,
-            price,
-            quantity
-        );
+    const {name, price, cost_price, quantity} = req.body;
 
+const product = await productModel.createProduct(
+    name,
+    price,
+    cost_price,
+    quantity
+);
         res.status(201).json({
             message: 'Product created successfully',
             product
@@ -64,8 +66,44 @@ const getAllProducts = async (req, res) => {
 };
 
 /**
- * GET SINGLE PRODUCT
+ * SEARCH PRODUCTS
  */
+const searchProducts = async (req, res) => {
+    try {
+
+        const keyword = req.query.q;
+
+       if (
+    !name ||
+    !price ||
+    !cost_price ||
+    quantity === undefined
+) {
+    return res.status(400).json({
+        message: 'All fields are required'
+    });
+}
+
+        const products =
+            await productModel.searchProducts(keyword);
+
+        res.json({
+            success: true,
+            products
+        });
+
+    } catch (err) {
+
+        console.log("🔥 SEARCH PRODUCTS ERROR:", err);
+
+        res.status(500).json({
+            message: "Server error",
+            error: err.message
+        });
+    }
+};
+
+/*** GET SINGLE PRODUCT */
 const getProductById = async (req, res) => {
     try {
         const product = await productModel.getProductById(req.params.id);
@@ -89,9 +127,7 @@ const getProductById = async (req, res) => {
     }
 };
 
-/**
- * UPDATE PRODUCT
- */
+/*** UPDATE PRODUCT*/
 const updateProduct = async (req, res) => {
     try {
         const { name, price, quantity } = req.body;
@@ -146,5 +182,6 @@ module.exports = {
     getAllProducts,
     getProductById,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    searchProducts
 };
